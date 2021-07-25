@@ -1,0 +1,16 @@
+{
+  "name": "moh-my-covid-express-api",
+  "version": "1.0.0",
+  "description": "Malaysia COVID-19 Express API, data sourced from ministry of health Malaysia",
+  "main": "index.js",
+  "author": "Li Wei Lee",
+  "license": "MIT",
+  "dependencies": {
+    "danfojs-node": "^0.2.7",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+    "scripts": {
+    "serve": "node index.js"
+  }
+}
