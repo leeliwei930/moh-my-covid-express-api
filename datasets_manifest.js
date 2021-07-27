@@ -22,7 +22,7 @@ const stateDeathCSV =
     "https://raw.githubusercontent.com/MoH-Malaysia/covid19-public/main/epidemic/deaths_state.csv";
 
 const clustersCSV =
-    "https://github.com/MoH-Malaysia/covid19-public/blob/main/epidemic/clusters.csv";
+    "https://raw.githubusercontent.com/MoH-Malaysia/covid19-public/main/epidemic/clusters.csv";
 
 const testsCSV =
     "https://raw.githubusercontent.com/MoH-Malaysia/covid19-public/main/epidemic/tests_malaysia.csv";

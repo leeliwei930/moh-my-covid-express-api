@@ -10,9 +10,17 @@ module.exports = {
             if (req.query.end_date) {
                 params.end_date = req.query.end_date;
             }
-            let data = await provider.getLocalStatistic(params);
+            let data = await provider.getEarlierLocalCasesStatistic(params);
             return res.status(200).json(data);
         } catch {
+            return res.status(500).json(error);
+        }
+    },
+    async latestLocalStats(req, res) {
+        try {
+            let data = await provider.getLatestLocalCasesStatistic();
+            return res.status(200).json(data);
+        } catch (error) {
             return res.status(500).json(error);
         }
     },
@@ -26,6 +34,14 @@ module.exports = {
                 params.end_date = req.query.end_date;
             }
             let data = await provider.getLocalTestsStatistic(params);
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(500).json(error);
+        }
+    },
+    async latestTestsStats(req, res) {
+        try {
+            let data = await provider.getLatestLocalTestsStatistic();
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json(error);

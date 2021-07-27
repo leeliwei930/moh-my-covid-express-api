@@ -13,7 +13,7 @@ const {
 } = require("../datasets_manifest");
 const state_group_decompose = require("../utils/state_group_decompose");
 module.exports = {
-    getLocalStatistic({ start_date, end_date }) {
+    getEarlierLocalCasesStatistic({ start_date, end_date }) {
         return new Promise(async (resolve, reject) => {
             try {
                 let datasets = await danfo.read_csv(localCasesCSV);
@@ -55,7 +55,59 @@ module.exports = {
             }
         });
     },
-    getLocalTestsStatistic({ start_date, end_date }) {
+    getLatestLocalCasesStatistic() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let datasets = await danfo.read_csv(localCasesCSV);
+
+                let latestStateDataFrame = datasets.sort_index({
+                    ascending: false
+                });
+
+                let latestStatistic = await latestStateDataFrame.to_json();
+                latestStatistic = JSON.parse(latestStatistic);
+                resolve({
+                    status: "success",
+                    data: latestStatistic[0]
+                });
+            } catch (error) {
+                reject({
+                    status: "error",
+                    message: error.message
+                });
+            }
+        });
+    },
+    getLatestLocalTestsStatistic() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let datasets = await danfo.read_csv(testsCSV);
+                datasets.rename({
+                    mapper: {
+                        " rtk-ag": "rtk-ag",
+                        " pcr": "pcr"
+                    },
+                    inplace: true
+                });
+                let latestStateDataFrame = datasets.sort_index({
+                    ascending: false
+                });
+
+                let latestStatistic = await latestStateDataFrame.to_json();
+                latestStatistic = JSON.parse(latestStatistic);
+                resolve({
+                    status: "success",
+                    data: latestStatistic[0]
+                });
+            } catch (error) {
+                reject({
+                    status: "error",
+                    message: error.message
+                });
+            }
+        });
+    },
+    getEarlierLocalTestsStatistic({ start_date, end_date }) {
         return new Promise(async (resolve, reject) => {
             try {
                 let datasets = await danfo.read_csv(testsCSV);
@@ -435,7 +487,58 @@ module.exports = {
     getClusterStatistic() {
         return new Promise(async (resolve, reject) => {
             try {
-                let datasets = await danfo.read_csv(clustersCSV);
+                let datasets = await danfo.read_csv(clustersCSV, {
+                    csvConfig: {
+                        columnConfigs: {
+                            cluster: {
+                                isLabel: true,
+                                dtype: "string"
+                            },
+                            state: {
+                                isLabel: true,
+                                dtype: "string"
+                            },
+                            district: {
+                                isLabel: true,
+                                dtype: "string"
+                            },
+                            date_announced: {
+                                isLabel: true
+                            },
+                            date_last_onset: {
+                                isLabel: true
+                            },
+                            category: {
+                                isLabel: true,
+                                dtype: "string"
+                            },
+                            status: {
+                                isLabel: true
+                            },
+                            cases_new: {
+                                isLabel: true
+                            },
+                            cases_total: {
+                                isLabel: true
+                            },
+                            cases_active: {
+                                isLabel: true
+                            },
+                            tests: {
+                                isLabel: true
+                            },
+                            icu: {
+                                isLabel: true
+                            },
+                            deaths: {
+                                isLabel: true
+                            },
+                            recovered: {
+                                isLabel: true
+                            }
+                        }
+                    }
+                });
 
                 let statistics = await datasets.to_json();
                 statistics["state"] = state_group_decompose.splitStateGroup(

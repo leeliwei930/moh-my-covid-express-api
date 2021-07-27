@@ -3,7 +3,9 @@ const process = require("process");
 require("dotenv").config();
 const {
     localStats,
+    latestLocalStats,
     testsStats,
+    latestTestsStats,
     stateStats,
     latestStateStats,
     stateHospitalStats,
@@ -11,7 +13,8 @@ const {
     latestStateICUStats,
     latestStateQuarantineStats,
     stateQuarantineStats,
-    stateICUStats
+    stateICUStats,
+    localClustersStats
 } = require("./controllers/statistic-handlers");
 
 const {
@@ -30,7 +33,10 @@ let server = express();
 let router = express.Router();
 let mysjRouter = express.Router();
 router.get("/local/cases", localStats);
+router.get("/local/cases/latest", latestLocalStats);
 router.get("/local/tests", testsStats);
+router.get("/local/tests/latest", latestTestsStats);
+router.get("/local/clusters", localClustersStats);
 router.get("/state/:state/cases", stateStats);
 router.get("/state/:state/cases/latest", latestStateStats);
 router.get("/state/:state/hospital", stateHospitalStats);
@@ -57,6 +63,9 @@ server.use("/api/covid-19-moh/mysj", mysjRouter);
 server.listen(process.env.EXPRESS_PORT, () => {
     console.log(`Server listening on port ${process.env.EXPRESS_PORT}`);
     console.log(
-        `For docs please navigate to /api/covid-19-moh/stats/docs path`
+        `COVID-19 Statistic endpoint available at /api/covid-19-moh/stats`
+    );
+    console.log(
+        `MySejahtera Statistic endpoint available at /api/covid-19-moh/mysj`
     );
 });
