@@ -487,67 +487,22 @@ module.exports = {
     getClusterStatistic() {
         return new Promise(async (resolve, reject) => {
             try {
-                let datasets = await danfo.read_csv(clustersCSV, {
-                    csvConfig: {
-                        columnConfigs: {
-                            cluster: {
-                                isLabel: true,
-                                dtype: "string"
-                            },
-                            state: {
-                                isLabel: true,
-                                dtype: "string"
-                            },
-                            district: {
-                                isLabel: true,
-                                dtype: "string"
-                            },
-                            date_announced: {
-                                isLabel: true
-                            },
-                            date_last_onset: {
-                                isLabel: true
-                            },
-                            category: {
-                                isLabel: true,
-                                dtype: "string"
-                            },
-                            status: {
-                                isLabel: true
-                            },
-                            cases_new: {
-                                isLabel: true
-                            },
-                            cases_total: {
-                                isLabel: true
-                            },
-                            cases_active: {
-                                isLabel: true
-                            },
-                            tests: {
-                                isLabel: true
-                            },
-                            icu: {
-                                isLabel: true
-                            },
-                            deaths: {
-                                isLabel: true
-                            },
-                            recovered: {
-                                isLabel: true
-                            }
-                        }
-                    }
-                });
+                let datasets = await danfo.read_csv(clustersCSV);
 
                 let statistics = await datasets.to_json();
-                statistics["state"] = state_group_decompose.splitStateGroup(
-                    statistics["state"]
-                );
-                statistics["district"] = state_group_decompose.splitStateGroup(
-                    statistics["district"]
-                );
                 statistics = JSON.parse(statistics);
+                statistics.map(statistic => {
+                    statistic["state"] = state_group_decompose.splitStateGroup(
+                        statistic["state"]
+                    );
+                    statistic[
+                        "district"
+                    ] = state_group_decompose.splitStateGroup(
+                        statistic["district"]
+                    );
+                    return statistic;
+                });
+
                 resolve({
                     status: "success",
                     data: statistics
